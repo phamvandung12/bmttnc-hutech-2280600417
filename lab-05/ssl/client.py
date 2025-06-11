@@ -13,6 +13,7 @@ def receive_data(ssl_socket):
                 break
             print("Nhận:", data.decode('utf-8'))
     except:
+        print("Lỗi")
         pass
     finally:
         ssl_socket.close()
@@ -23,16 +24,14 @@ client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Tạo SSL context
 context = ssl.SSLContext(ssl.PROTOCOL_TLS)
-context.verify_mode = ssl.CERT_NONE  # Không kiểm tra chứng chỉ
-context.check_hostname = False       # Không kiểm tra hostname
+context.verify_mode = ssl.CERT_NONE  # Thay đổi theo nhu cầu
+context.check_hostname = False  # Thay đổi theo nhu cầu
 
 # Thiết lập kết nối SSL
 ssl_socket = context.wrap_socket(client_socket, server_hostname='localhost')
-
-# Kết nối đến server
 ssl_socket.connect(server_address)
 
-# Bắt đầu một luồng để nhận dữ liệu từ server
+# Khởi động thread để nhận dữ liệu từ server
 receive_thread = threading.Thread(target=receive_data, args=(ssl_socket,))
 receive_thread.start()
 
